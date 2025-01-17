@@ -2,7 +2,8 @@
 <html>
 
 <head>
-    <title>Using Download Attribute</title>
+    <title>Download PDF with Timestamp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         p {
             color: black;
@@ -19,8 +20,42 @@
 <body>
 
     <p>
-        Website down, click <a href="geeksforgeeks.png" download="GFG">here</a> to refresh.
+        Website down, click <a id="download-link" href="#" onclick="generatePDF(); return false;">here</a> to refresh.
     </p>
+
+    <script>
+        async function generatePDF() {
+            try {
+                // Import jsPDF
+                const { jsPDF } = window.jspdf;
+
+                // Create a new jsPDF instance
+                const doc = new jsPDF();
+
+                // Add a line of text
+                const text = "Team In-N-Out: Grace, Katie, Deborah, Lily";
+                const timestamp = `Timestamp: ${new Date().toLocaleString()}`;
+                doc.text(text, 10, 20);
+                doc.text(timestamp, 10, 30);
+
+                // Save the PDF to a Blob
+                const pdfBlob = doc.output("blob");
+
+                // Create a download link dynamically
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(pdfBlob);
+                link.download = "GeneratedFile.pdf";
+
+                // Trigger the download
+                link.click();
+
+                // Clean up the URL object
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error("An error occurred while generating the PDF:", error);
+            }
+        }
+    </script>
 
 </body>
 
